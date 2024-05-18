@@ -132,7 +132,7 @@ export default function Home() {
             <div className="flex flex-col items-center mt-4">
               <Button
                 onClick={cancelTimer}
-                className="bg-red-500 text-white px-4 py-2 rounded-full text-xl mb-2"
+                className="bg-red-500 text-white px-4 py-2 rounded-full text-xl mb-2 transition duration-300 ease-in-out hover:bg-red-600 focus:bg-red-700"
               >
                 Cancel
               </Button>
