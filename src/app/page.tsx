@@ -102,12 +102,12 @@ export default function Home() {
                 onChange={handleCaptchaChange}
                 className="text-black text-2xl p-2 rounded"
               />
-              <button
+              <Button
                 onClick={verifyCaptcha}
-                className="bg-white text-blue-500 px-4 py-2 rounded-full text-xl mt-2"
+                // className="bg-white text-blue-500 px-4 py-2 rounded-full text-xl mt-2"
               >
                 Verify
-              </button>
+              </Button>
             </div>
           ) : null}
           {!isActive && isVerified && (
