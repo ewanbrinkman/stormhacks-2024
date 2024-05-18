@@ -153,6 +153,7 @@ export default function Home() {
               </Button>
             </div>
           )}
+          <Button href="/resource" className="mt-4">Resources</Button>
         </div>
       </div>
     </main>
