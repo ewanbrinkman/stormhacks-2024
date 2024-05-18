@@ -51,7 +51,7 @@ export default function Home() {
     }
   };
 
-  const backgroundColor = timeLeft === 0 ? 'bg-red-500' : 'bg-blue-500';
+  const backgroundColor = timeLeft === 0 ? 'bg-bad' : 'bg-good';
 
   return (
     <main className={`flex min-h-screen flex-col items-center justify-between p-24 ${backgroundColor}`}>

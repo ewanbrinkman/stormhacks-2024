@@ -14,6 +14,8 @@ const config: Config = {
         'second-color-normal': appConfig.colorTheme.second.normal,
         'second-color-dark': appConfig.colorTheme.second.dark,
         'third-color': appConfig.colorTheme.third,
+        'good': appConfig.colorTheme.background.good,
+        'bad': appConfig.colorTheme.background.bad,
     },
     },
   },

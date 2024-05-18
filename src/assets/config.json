@@ -12,6 +12,10 @@
             "normal": "#00cef7",
             "dark": "#007b94"
         },
-        "third": "#4f149c"
+        "third": "#4f149c",
+        "background": {
+            "good": "#bddbff",
+            "bad": "#ffbacd"
+        }
     }
 }
