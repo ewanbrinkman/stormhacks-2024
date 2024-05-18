@@ -72,6 +72,20 @@ export default function Home() {
     setInitialTime(Number(e.target.value));
   };
 
+  const formatTime = (totalSeconds: number) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const formattedTime = [
+      hours > 0 ? String(hours).padStart(2, '0') : null,
+      String(minutes).padStart(2, '0'),
+      String(seconds).padStart(2, '0')
+    ].filter(Boolean).join(':');
+
+    return formattedTime;
+  };
+
   const backgroundColor = timeLeft === 0 && !isVerified ? 'bg-bad' : 'bg-good';
 
   return (
@@ -85,7 +99,7 @@ export default function Home() {
           {timeLeft > 0 ? (
             <div className="mb-4">
               <div className="text-yellow-500 text-6xl">
-                {timeLeft < 10 ? `0:0${timeLeft}` : `0:${timeLeft}`}
+                {formatTime(timeLeft)}
               </div>
             </div>
           ) : !isVerified ? (
@@ -102,12 +116,7 @@ export default function Home() {
                 onChange={handleCaptchaChange}
                 className="text-black text-2xl p-2 rounded"
               />
-              <Button
-                onClick={verifyCaptcha}
-                // className="bg-white text-blue-500 px-4 py-2 rounded-full text-xl mt-2"
-              >
-                Verify
-              </Button>
+              <Button onClick={verifyCaptcha}>Verify</Button>
             </div>
           ) : null}
           {!isActive && isVerified && (
@@ -123,7 +132,6 @@ export default function Home() {
               <Button
                 className='bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700'
                 onClick={startTimer}
-                // className="bg-white text-blue-500 px-4 py-2 rounded-full text-xl"
               >
                 Start
               </Button>
