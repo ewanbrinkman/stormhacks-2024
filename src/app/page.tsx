@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Button from './components/Button'; // Import the Button component
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState(10);
@@ -36,6 +37,17 @@ export default function Home() {
     setCaptcha('');
     setIsVerified(true);
     setIsActive(false);
+  };
+
+  const cancelTimer = () => {
+    setIsActive(false);
+    setTimeLeft(0);
+    setInputCaptcha('');
+    setCaptcha('');
+  };
+
+  const extendTimer = (additionalTime: number) => {
+    setTimeLeft(timeLeft + additionalTime);
   };
 
   const generateCaptcha = () => {
@@ -114,6 +126,22 @@ export default function Home() {
                 Start
               </button>
             </>
+          )}
+          {isActive && (
+            <div className="flex flex-col items-center mt-4">
+              <button
+                onClick={cancelTimer}
+                className="bg-red-500 text-white px-4 py-2 rounded-full text-xl mb-2"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => extendTimer(10)}
+                className="bg-green-500 text-white px-4 py-2 rounded-full text-xl"
+              >
+                Extend 10s
+              </button>
+            </div>
           )}
         </div>
       </div>
