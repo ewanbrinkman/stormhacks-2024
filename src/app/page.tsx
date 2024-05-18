@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import config from '@assets/config.json';
+import Button from "@components/Button";
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState(10);
@@ -88,12 +89,15 @@ export default function Home() {
               </button>
             </div>
           )}
-          <button
+          {/* <button
             onClick={startTimer}
             className="bg-white text-blue-500 px-4 py-2 rounded-full text-xl"
           >
             Start
-          </button>
+          </button> */}
+          <Button onClick={startTimer}>
+            Start
+          </Button>
         </div>
       </div>
     </main>

@@ -5,5 +5,13 @@
     "randomNumber": {
         "min": 1000,
         "max": 10000
+    },
+    "colorTheme": {
+        "main": "#00c476",
+        "second": {
+            "normal": "#00cef7",
+            "dark": "#007b94"
+        },
+        "third": "#4f149c"
     }
 }
