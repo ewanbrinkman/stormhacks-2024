@@ -1,0 +1,9 @@
+{
+    "timer": {
+        "defaultLength": 60
+    },
+    "randomNumber": {
+        "min": 1000,
+        "max": 10000
+    }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import config from '@assets/config.json';
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState(10);
@@ -26,14 +27,14 @@ export default function Home() {
   };
 
   const resetTimer = () => {
-    setTimeLeft(10);
+    setTimeLeft(config.timer.defaultLength);
     setInputCaptcha('');
     setCaptcha('');
     setIsActive(false);
   };
 
   const generateCaptcha = () => {
-    const randomCaptcha = Math.floor(1000 + Math.random() * 9000).toString();
+    const randomCaptcha = Math.floor(config.randomNumber.min + Math.random() * (config.randomNumber.max - config.randomNumber.min)).toString();
     setCaptcha(randomCaptcha);
   };
 
