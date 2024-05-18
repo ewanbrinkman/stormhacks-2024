@@ -5,13 +5,14 @@ import Button from '@components/Button';
 import config from '@assets/config.json';
 
 export default function Home() {
-  const [timeLeft, setTimeLeft] = useState(config.timer.defaultLength);
-  const [initialTime, setInitialTime] = useState(config.timer.defaultLength);
+  const defaultTime = 60; // Default to one minute
+  const [timeLeft, setTimeLeft] = useState(defaultTime);
+  const [initialTime, setInitialTime] = useState(defaultTime);
   const [isActive, setIsActive] = useState(false);
   const [captcha, setCaptcha] = useState('');
   const [inputCaptcha, setInputCaptcha] = useState('');
   const [isVerified, setIsVerified] = useState(true);
-  const [timeInput, setTimeInput] = useState('00:00:10'); // Default to 10 seconds
+  const [timeInput, setTimeInput] = useState('00:01:00'); // Default to one minute
 
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
@@ -49,7 +50,9 @@ export default function Home() {
 
   const cancelTimer = () => {
     setIsActive(false);
-    setTimeLeft(0);
+    setTimeLeft(defaultTime);
+    setInitialTime(defaultTime);
+    setTimeInput('00:01:00'); // Reset input to default one minute
     setInputCaptcha('');
     setCaptcha('');
   };
