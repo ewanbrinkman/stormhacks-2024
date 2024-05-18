@@ -130,18 +130,18 @@ export default function Home() {
           )}
           {isActive && (
             <div className="flex flex-col items-center mt-4">
-              <button
+              <Button
                 onClick={cancelTimer}
                 className="bg-red-500 text-white px-4 py-2 rounded-full text-xl mb-2"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => extendTimer(10)}
-                className="bg-green-500 text-white px-4 py-2 rounded-full text-xl"
+                className="bg-green-500 text-white px-4 py-2 rounded-full text-xl transition duration-300 ease-in-out hover:bg-green-600 focus:bg-green-700"
               >
                 Extend 10s
-              </button>
+              </Button>
             </div>
           )}
         </div>

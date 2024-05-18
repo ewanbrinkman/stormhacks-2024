@@ -10,7 +10,10 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
         <Link
             href={props.href}
             className={`${baseClassName} ${props.className}`}
-            onClick={props.onClick}
+            onClick={(event) => {
+                event.currentTarget.blur();
+                props.onClick?.()
+            }}
             style={props.style}
         >
             {props.children}
@@ -18,7 +21,10 @@ const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
     ) : (
         <button
             className={`${baseClassName} ${props.className}`}
-            onClick={props.onClick}
+            onClick={(event) => {
+                event.currentTarget.blur();
+                props?.onClick?.()
+            }}
             style={props.style}
         >
             {props.children}
