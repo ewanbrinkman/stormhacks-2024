@@ -10,7 +10,8 @@
         "main": "#00c476",
         "second": {
             "normal": "#00cef7",
-            "dark": "#007b94"
+            "dark": "#007b94",
+            "darkDark": "#063c61"
         },
         "third": "#4f149c",
         "background": {

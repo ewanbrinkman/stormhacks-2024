@@ -13,6 +13,7 @@ const config: Config = {
         'main-color': appConfig.colorTheme.main,
         'second-color-normal': appConfig.colorTheme.second.normal,
         'second-color-dark': appConfig.colorTheme.second.dark,
+        'second-color-dark-dark': appConfig.colorTheme.second.darkDark,
         'third-color': appConfig.colorTheme.third,
         'good': appConfig.colorTheme.background.good,
         'bad': appConfig.colorTheme.background.bad,

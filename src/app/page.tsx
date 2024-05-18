@@ -121,6 +121,7 @@ export default function Home() {
                 placeholder="Set timer in seconds"
               />
               <Button
+                className='bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700'
                 onClick={startTimer}
                 // className="bg-white text-blue-500 px-4 py-2 rounded-full text-xl"
               >
@@ -132,13 +133,13 @@ export default function Home() {
             <div className="flex flex-col items-center mt-4">
               <Button
                 onClick={cancelTimer}
-                className="bg-red-500 text-white px-4 py-2 rounded-full text-xl mb-2 transition duration-300 ease-in-out hover:bg-red-600 focus:bg-red-700"
+                className="bg-red-500 transition duration-300 ease-in-out hover:bg-red-600 focus:bg-red-700"
               >
                 Cancel
               </Button>
               <Button
                 onClick={() => extendTimer(10)}
-                className="bg-green-500 text-white px-4 py-2 rounded-full text-xl transition duration-300 ease-in-out hover:bg-green-600 focus:bg-green-700"
+                className="bg-green-500 transition duration-300 ease-in-out hover:bg-green-600 focus:bg-green-700"
               >
                 Extend 10s
               </Button>
