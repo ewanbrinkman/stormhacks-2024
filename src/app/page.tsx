@@ -11,6 +11,7 @@ export default function Home() {
   const [captcha, setCaptcha] = useState('');
   const [inputCaptcha, setInputCaptcha] = useState('');
   const [isVerified, setIsVerified] = useState(true);
+  const [timeInput, setTimeInput] = useState('00:00:10'); // Default to 10 seconds
 
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
@@ -27,9 +28,15 @@ export default function Home() {
   }, [isActive, timeLeft]);
 
   const startTimer = () => {
-    setIsActive(true);
-    setTimeLeft(initialTime);
-    setIsVerified(true);
+    const totalSeconds = parseTimeInput(timeInput);
+    if (totalSeconds !== null) {
+      setIsActive(true);
+      setTimeLeft(totalSeconds);
+      setInitialTime(totalSeconds);
+      setIsVerified(true);
+    } else {
+      alert('Invalid time format. Please enter a valid time in HH:MM:SS format.');
+    }
   };
 
   const resetTimer = () => {
@@ -68,8 +75,20 @@ export default function Home() {
     }
   };
 
-  const handleInitialTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInitialTime(Number(e.target.value));
+  const handleTimeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTimeInput(e.target.value);
+  };
+
+  const parseTimeInput = (input: string) => {
+    const regex = /^([0-1]?[0-9]|2[0-3]):([0-5]?[0-9]):([0-5]?[0-9])$/;
+    const match = input.match(regex);
+    if (match) {
+      const hours = parseInt(match[1], 10);
+      const minutes = parseInt(match[2], 10);
+      const seconds = parseInt(match[3], 10);
+      return hours * 3600 + minutes * 60 + seconds;
+    }
+    return null;
   };
 
   const formatTime = (totalSeconds: number) => {
@@ -78,10 +97,10 @@ export default function Home() {
     const seconds = totalSeconds % 60;
 
     const formattedTime = [
-      hours > 0 ? String(hours).padStart(2, '0') : null,
+      String(hours).padStart(2, '0'),
       String(minutes).padStart(2, '0'),
       String(seconds).padStart(2, '0')
-    ].filter(Boolean).join(':');
+    ].join(':');
 
     return formattedTime;
   };
@@ -93,8 +112,8 @@ export default function Home() {
       <div className="flex flex-grow relative justify-center items-center">
         <div className="text-center">
           <div className="flex items-center justify-center mb-4">
-            <img src="/path/to/your/logo.png" alt="SafePulse" className="h-8 mr-2" />
-            <h1 className="text-white text-2xl mt-50">SOS-OverWatch</h1>
+            <img src="@components/favicon.png" alt="icon" className="h-8 mr-2" />
+            <h1 className="text-white text-2xl">SOS-OverWatch</h1>
           </div>
           {timeLeft > 0 ? (
             <div className="mb-4">
@@ -121,13 +140,14 @@ export default function Home() {
           ) : null}
           {!isActive && isVerified && (
             <>
-              <div className="text-black text-xl mb-2">Set timer in seconds:</div>
+              <div className="text-black text-xl mb-2">Set timer (HH:MM:SS):</div>
               <input
-                type="number"
-                value={initialTime}
-                onChange={handleInitialTimeChange}
+                type="text"
+                value={timeInput}
+                onChange={handleTimeInputChange}
                 className="text-black text-xl p-2 rounded mb-4"
-                placeholder="Set timer in seconds"
+                placeholder="HH:MM:SS"
+                maxLength={8} // To ensure it doesn't exceed HH:MM:SS
               />
               <Button
                 className='bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700'
