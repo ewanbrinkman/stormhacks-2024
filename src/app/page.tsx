@@ -5,7 +5,7 @@ import config from '@assets/config.json';
 import Button from "@components/Button";
 
 export default function Home() {
-  const [timeLeft, setTimeLeft] = useState(10);
+  const [timeLeft, setTimeLeft] = useState(config.timer.defaultLength);
   const [isActive, setIsActive] = useState(false);
   const [captcha, setCaptcha] = useState('');
   const [inputCaptcha, setInputCaptcha] = useState('');
