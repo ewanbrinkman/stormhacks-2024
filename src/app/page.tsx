@@ -56,7 +56,7 @@ export default function Home() {
       <div className="flex flex-grow relative justify-center items-center">
         <div className="text-center">
           <div className="flex items-center justify-center mb-4">
-            <img src="/path/to/your/logo.png" alt="SafePulse" className="h-8 mr-2" />
+            <img src="/path/to/your/logo.png" alt="SOS-OverWatch" className="h-8 mr-2" />
             <h1 className="text-white text-2xl">SOS-OverWatch</h1>
           </div>
           {timeLeft > 0 ? (
