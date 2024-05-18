@@ -22,8 +22,10 @@ export default function Home() {
     setIsActive(true);
   };
 
+  const backgroundColor = timeLeft === 0 ? 'bg-red-500' : 'bg-blue-500';
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-blue-500">
+    <main className={`flex min-h-screen flex-col items-center justify-between p-24 ${backgroundColor}`}>
       <div className="flex flex-grow relative justify-center items-center">
         <div className="text-center">
           <div className="flex items-center justify-center mb-4">
