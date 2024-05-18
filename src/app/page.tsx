@@ -5,6 +5,8 @@ import React, { useState, useEffect } from 'react';
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState(10);
   const [isActive, setIsActive] = useState(false);
+  const [captcha, setCaptcha] = useState('');
+  const [inputCaptcha, setInputCaptcha] = useState('');
 
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
@@ -14,12 +16,37 @@ export default function Home() {
       }, 1000);
     } else if (timeLeft === 0) {
       setIsActive(false);
+      generateCaptcha();
     }
     return () => clearTimeout(timer);
   }, [isActive, timeLeft]);
 
   const startTimer = () => {
     setIsActive(true);
+  };
+
+  const resetTimer = () => {
+    setTimeLeft(10);
+    setInputCaptcha('');
+    setCaptcha('');
+    setIsActive(false);
+  };
+
+  const generateCaptcha = () => {
+    const randomCaptcha = Math.floor(1000 + Math.random() * 9000).toString();
+    setCaptcha(randomCaptcha);
+  };
+
+  const handleCaptchaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputCaptcha(e.target.value);
+  };
+
+  const verifyCaptcha = () => {
+    if (inputCaptcha === captcha) {
+      resetTimer();
+    } else {
+      alert('Incorrect captcha. Please try again.');
+    }
   };
 
   const backgroundColor = timeLeft === 0 ? 'bg-red-500' : 'bg-blue-500';
@@ -32,11 +59,34 @@ export default function Home() {
             <img src="/path/to/your/logo.png" alt="SafePulse" className="h-8 mr-2" />
             <h1 className="text-white text-2xl">SOS-OverWatch</h1>
           </div>
-          <div className="mb-4">
-            <div className="text-yellow-500 text-6xl">
-              {timeLeft < 10 ? `0:0${timeLeft}` : `0:${timeLeft}`}
+          {timeLeft > 0 ? (
+            <div className="mb-4">
+              <div className="text-yellow-500 text-6xl">
+                {timeLeft < 10 ? `0:0${timeLeft}` : `0:${timeLeft}`}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="mb-4">
+              <div className="text-white text-2xl mb-2">
+                Enter the captcha to reset the timer:
+              </div>
+              <div className="text-yellow-500 text-4xl mb-2">
+                {captcha}
+              </div>
+              <input
+                type="text"
+                value={inputCaptcha}
+                onChange={handleCaptchaChange}
+                className="text-black text-2xl p-2 rounded"
+              />
+              <button
+                onClick={verifyCaptcha}
+                className="bg-white text-blue-500 px-4 py-2 rounded-full text-xl mt-2"
+              >
+                Verify
+              </button>
+            </div>
+          )}
           <button
             onClick={startTimer}
             className="bg-white text-blue-500 px-4 py-2 rounded-full text-xl"
