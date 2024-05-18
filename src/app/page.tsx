@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import Button from './components/Button'; // Import the Button component
+import Button from '@components/Button';
+import config from '@assets/config.json';
 
 export default function Home() {
-  const [timeLeft, setTimeLeft] = useState(10);
-  const [initialTime, setInitialTime] = useState(10);
+  const [timeLeft, setTimeLeft] = useState(config.timer.defaultLength);
+  const [initialTime, setInitialTime] = useState(config.timer.defaultLength);
   const [isActive, setIsActive] = useState(false);
   const [captcha, setCaptcha] = useState('');
   const [inputCaptcha, setInputCaptcha] = useState('');
@@ -51,7 +52,7 @@ export default function Home() {
   };
 
   const generateCaptcha = () => {
-    const randomCaptcha = Math.floor(1000 + Math.random() * 9000).toString();
+    const randomCaptcha = Math.floor(config.randomNumber.min + Math.random() * (config.randomNumber.max - config.randomNumber.min)).toString();
     setCaptcha(randomCaptcha);
   };
 
@@ -71,7 +72,7 @@ export default function Home() {
     setInitialTime(Number(e.target.value));
   };
 
-  const backgroundColor = timeLeft === 0 && !isVerified ? 'bg-red-500' : 'bg-blue-500';
+  const backgroundColor = timeLeft === 0 && !isVerified ? 'bg-bad' : 'bg-good';
 
   return (
     <main className={`flex min-h-screen flex-col items-center justify-between p-24 ${backgroundColor}`}>
@@ -119,12 +120,12 @@ export default function Home() {
                 className="text-black text-xl p-2 rounded mb-4"
                 placeholder="Set timer in seconds"
               />
-              <button
+              <Button
                 onClick={startTimer}
-                className="bg-white text-blue-500 px-4 py-2 rounded-full text-xl"
+                // className="bg-white text-blue-500 px-4 py-2 rounded-full text-xl"
               >
                 Start
-              </button>
+              </Button>
             </>
           )}
           {isActive && (
