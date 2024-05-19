@@ -12,6 +12,8 @@ export default function Home() {
   const [inputCaptcha, setInputCaptcha] = useState('');
   const [isVerified, setIsVerified] = useState(true);
   const [timeInput, setTimeInput] = useState('00:00:10'); // Default to 10 seconds
+  const [timeErrorMessage, setTimeErrorMessage] = useState(''); // State for timer error message
+  const [captchaErrorMessage, setCaptchaErrorMessage] = useState(''); // State for captcha error message
 
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
@@ -30,12 +32,17 @@ export default function Home() {
   const startTimer = () => {
     const totalSeconds = parseTimeInput(timeInput);
     if (totalSeconds !== null) {
-      setIsActive(true);
-      setTimeLeft(totalSeconds);
-      setInitialTime(totalSeconds);
-      setIsVerified(true);
+      if (totalSeconds > 23 * 3600 + 59 * 60 + 59) {
+        setTimeErrorMessage('Time is limited up to 23:59:59.');
+      } else {
+        setIsActive(true);
+        setTimeLeft(totalSeconds);
+        setInitialTime(totalSeconds);
+        setIsVerified(true);
+        setTimeErrorMessage(''); // Clear error message when timer starts successfully
+      }
     } else {
-      alert('Invalid time format. Please enter a valid time in HH:MM:SS format.');
+      setTimeErrorMessage('Invalid time format. Please enter a valid time in HH:MM:SS format.');
     }
   };
 
@@ -65,19 +72,22 @@ export default function Home() {
 
   const handleCaptchaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputCaptcha(e.target.value);
+    setCaptchaErrorMessage(''); // Clear captcha error message when user retypes
   };
 
   const verifyCaptcha = () => {
     if (inputCaptcha === captcha) {
       resetTimer();
+      setCaptchaErrorMessage(''); // Clear error message on successful verification
     } else {
-      alert('Incorrect captcha. Please try again.');
+      setCaptchaErrorMessage('Incorrect captcha. Please try again.');
     }
   };
 
   const handleTimeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^0-9:]/g, ''); // Only allow numbers and colons
     setTimeInput(value);
+    setTimeErrorMessage(''); // Clear error message when user retypes
   };
 
   const parseTimeInput = (input: string) => {
@@ -136,6 +146,7 @@ export default function Home() {
                 onChange={handleCaptchaChange}
                 className="text-black text-2xl p-2 rounded"
               />
+              {captchaErrorMessage && <div className="text-red-500 text-sm mb-2">{captchaErrorMessage}</div>}
               <Button onClick={verifyCaptcha}>Verify</Button>
             </div>
           ) : null}
@@ -150,6 +161,7 @@ export default function Home() {
                 placeholder="HH:MM:SS"
                 maxLength={8} // To ensure it doesn't exceed HH:MM:SS
               />
+              {timeErrorMessage && <div className="text-red-500 text-sm mb-2">{timeErrorMessage}</div>}
               <Button
                 className='bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700'
                 onClick={startTimer}
