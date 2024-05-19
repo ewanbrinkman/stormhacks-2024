@@ -148,7 +148,8 @@ export default function Home() {
               maxLength={4} // Limit to 4 digits
             />
             {captchaErrorMessage && <div className="text-red-500 text-sm mb-2">{captchaErrorMessage}</div>}
-            <Button onClick={verifyCaptcha}>Verify</Button>
+            <Button className='bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mb-2'
+            onClick={verifyCaptcha}>Verify</Button>
           </div>
         ) : null}
         {!isActive && isVerified && (
@@ -187,7 +188,7 @@ export default function Home() {
             </Button>
           </div>
         )}
-        <Button href="/resource" className="mt-4">Resources</Button>
+        <Button href="/resource" className='bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mt-4'>Resources</Button>
       </div>
     </main>
   );
