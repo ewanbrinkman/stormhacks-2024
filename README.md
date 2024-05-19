@@ -6,14 +6,10 @@ Our StormHacks 2024 project: an Overdose safety website.
 # How To Run
 
 1. Download the source code
-2. Run `npm install`
-3. Run `npm run dev`
-4. Open your browser in the localhost URL provided
+2. Install Node.js first.
+3. Run `npm install`
+4. Run `npm run dev`
+5. Open your browser in the localhost URL provided
 
 
-# What to install 
-Before you run this project, install Node.js first.
-Then you install these packages such as 
-npm install axios
-npm install leaflet
-npm install twilio 
+
