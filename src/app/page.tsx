@@ -207,7 +207,7 @@ export default function Home() {
   const sendSms = () => {
     axios.post('/api/sendMessage/send-sms', {
       to: phoneNumber, // Use the recipient's phone number
-      message: 'The user did not verify the captcha in time.',
+      message: 'The user did not verify the captcha in time and has likely overdosed. They require medical attention.',
     })
     .then(response => {
       console.log('SMS sent:', response.data);
