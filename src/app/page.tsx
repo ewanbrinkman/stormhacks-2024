@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Button from "@components/Button";
 import config from "@assets/config.json";
+import axios from "axios";
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState(config.timer.defaultLength);
@@ -14,6 +15,8 @@ export default function Home() {
   const [timeInput, setTimeInput] = useState("00:01:00"); // Default to 10 seconds
   const [timeErrorMessage, setTimeErrorMessage] = useState(""); // State for timer error message
   const [captchaErrorMessage, setCaptchaErrorMessage] = useState(""); // State for captcha error message
+  const [phoneNumber, setPhoneNumber] = useState(""); // State for recipient phone number
+  const [phoneErrorMessage, setPhoneErrorMessage] = useState(""); // State for phone number error message
 
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
@@ -25,18 +28,22 @@ export default function Home() {
       setIsActive(false);
       generateCaptcha();
       setIsVerified(false);
+      sendSms(); // Send SMS when time runs out
     }
     return () => clearTimeout(timer);
   }, [isActive, timeLeft]);
 
   const startTimer = () => {
     const totalSeconds = parseTimeInput(timeInput);
-    if (totalSeconds !== null) {
+    if (totalSeconds !== null && validatePhoneNumber(phoneNumber)) {
       setIsActive(true);
       setTimeLeft(totalSeconds);
       setInitialTime(totalSeconds);
       setIsVerified(true);
       setTimeErrorMessage(""); // Clear error message when timer starts successfully
+      setPhoneErrorMessage(""); // Clear phone error message
+    } else if (!validatePhoneNumber(phoneNumber)) {
+      setPhoneErrorMessage("Invalid phone number. Please enter a valid phone number.");
     }
   };
 
@@ -93,6 +100,17 @@ export default function Home() {
     }
   };
 
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9]/g, ""); // Only allow numbers
+    setPhoneNumber(value);
+    setPhoneErrorMessage(""); // Clear phone error message when user retypes
+  };
+
+  const validatePhoneNumber = (phone: string) => {
+    const phoneRegex = /^\d{10,15}$/; // Validate phone number (10-15 digits)
+    return phoneRegex.test(phone);
+  };
+
   const parseTimeInput = (input: string) => {
     const regex = /^([0-1]?[0-9]|2[0-3]):([0-5]?[0-9]):([0-5]?[0-9])$/;
     const match = input.match(regex);
@@ -125,6 +143,19 @@ export default function Home() {
     ].join(":");
 
     return formattedTime;
+  };
+
+  const sendSms = () => {
+    axios.post('/api/send-sms', {
+      to: phoneNumber, // Use the recipient's phone number
+      message: 'The user did not verify the captcha in time.',
+    })
+    .then(response => {
+      console.log('SMS sent:', response.data);
+    })
+    .catch(error => {
+      console.error('Failed to send SMS:', error);
+    });
   };
 
   const backgroundColor = timeLeft === 0 && !isVerified ? "bg-bad" : "bg-good";
@@ -192,7 +223,21 @@ export default function Home() {
                 {timeErrorMessage}
               </div>
             )}
-            {isTimeInputValid() && !timeErrorMessage && (
+            <div className="text-black text-xl mb-2">Enter recipient phone number:</div>
+            <input
+              type="text"
+              value={phoneNumber}
+              onChange={handlePhoneNumberChange}
+              className="text-black text-xl p-2 rounded mb-4"
+              placeholder="Phone number"
+              maxLength={15} // Limit phone number length
+            />
+            {phoneErrorMessage && (
+              <div className="text-red-500 text-sm mb-2">
+                {phoneErrorMessage}
+              </div>
+            )}
+            {isTimeInputValid() && !timeErrorMessage && !phoneErrorMessage && (
               <Button
                 className="bg-blue-500 text-white transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mb-2"
                 onClick={startTimer}
