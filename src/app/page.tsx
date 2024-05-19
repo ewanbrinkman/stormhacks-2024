@@ -120,78 +120,75 @@ export default function Home() {
   const backgroundColor = timeLeft === 0 && !isVerified ? 'bg-bad' : 'bg-good';
 
   return (
-    <main className={`flex min-h-screen flex-col items-center justify-between p-24 ${backgroundColor}`}>
-      <div className="flex flex-grow relative justify-center items-center">
-        <div className="text-center">
-          <div className="flex items-center justify-center mb-4">
-            <img src="/favicon.png" alt="icon" className="h-8 mr-2" />
-            <h1 className="text-white text-2xl">SOS-OverWatch</h1>
-          </div>
-          {timeLeft > 0 ? (
-            <div className="mb-4">
-              <div className="text-yellow-500 text-6xl">
-                {formatTime(timeLeft)}
-              </div>
-            </div>
-          ) : !isVerified ? (
-            <div className="mb-4">
-              <div className="text-white text-2xl mb-2">
-                Enter the captcha to reset the timer:
-              </div>
-              <div className="text-yellow-500 text-4xl mb-2">
-                {captcha}
-              </div>
-              <input
-                type="text"
-                value={inputCaptcha}
-                onChange={handleCaptchaChange}
-                className="text-black text-2xl p-2 rounded"
-                maxLength={4} // Limit to 4 digits
-              />
-              {captchaErrorMessage && <div className="text-red-500 text-sm mb-2">{captchaErrorMessage}</div>}
-              <Button onClick={verifyCaptcha}>Verify</Button>
-            </div>
-          ) : null}
-          {!isActive && isVerified && (
-            <>
-              <div className="text-black text-xl mb-2">Set timer (HH:MM:SS):</div>
-              <input
-                type="text"
-                value={timeInput}
-                onChange={handleTimeInputChange}
-                className="text-black text-xl p-2 rounded mb-4"
-                placeholder="HH:MM:SS"
-                maxLength={8} // To ensure it doesn't exceed HH:MM:SS
-              />
-              {timeErrorMessage && <div className="text-red-500 text-sm mb-2">{timeErrorMessage}</div>}
-              <Button
-                className='bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700'
-                onClick={startTimer}
-              >
-                Start
-              </Button>
-            </>
-          )}
-          {isActive && (
-            <div className="flex flex-col items-center mt-4">
-              <Button
-                onClick={cancelTimer}
-                className="bg-red-500 transition duration-300 ease-in-out hover:bg-red-600 focus:bg-red-700"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={() => extendTimer(10)}
-                className="bg-green-500 transition duration-300 ease-in-out hover:bg-green-600 focus:bg-green-700"
-              >
-                Extend 10s
-              </Button>
-            </div>
-          )}
-          <Button href="/resource" className="mt-4">Resources</Button>
+    <main className={`flex min-h-screen flex-col items-center justify-center ${backgroundColor}`}>
+      <div className="flex flex-col items-center justify-center text-center">
+        <div className="flex items-center justify-center mb-4">
+          <img src="/favicon.png" alt="icon" className="h-8 mr-2" />
+          <h1 className="text-white text-2xl">SOS-OverWatch</h1>
         </div>
+        {timeLeft > 0 ? (
+          <div className="mb-4">
+            <div className="text-yellow-500 text-6xl">
+              {formatTime(timeLeft)}
+            </div>
+          </div>
+        ) : !isVerified ? (
+          <div className="mb-4">
+            <div className="text-white text-2xl mb-2">
+              Enter the captcha to reset the timer:
+            </div>
+            <div className="text-yellow-500 text-4xl mb-2">
+              {captcha}
+            </div>
+            <input
+              type="text"
+              value={inputCaptcha}
+              onChange={handleCaptchaChange}
+              className="text-black text-2xl p-2 rounded mb-2"
+              maxLength={4} // Limit to 4 digits
+            />
+            {captchaErrorMessage && <div className="text-red-500 text-sm mb-2">{captchaErrorMessage}</div>}
+            <Button onClick={verifyCaptcha}>Verify</Button>
+          </div>
+        ) : null}
+        {!isActive && isVerified && (
+          <>
+            <div className="text-black text-xl mb-2">Set timer (HH:MM:SS):</div>
+            <input
+              type="text"
+              value={timeInput}
+              onChange={handleTimeInputChange}
+              className="text-black text-xl p-2 rounded mb-4"
+              placeholder="HH:MM:SS"
+              maxLength={8} // To ensure it doesn't exceed HH:MM:SS
+            />
+            {timeErrorMessage && <div className="text-red-500 text-sm mb-2">{timeErrorMessage}</div>}
+            <Button
+              className='bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mb-2'
+              onClick={startTimer}
+            >
+              Start
+            </Button>
+          </>
+        )}
+        {isActive && (
+          <div className="flex flex-col items-center mt-4">
+            <Button
+              onClick={cancelTimer}
+              className="bg-red-500 transition duration-300 ease-in-out hover:bg-red-600 focus:bg-red-700 mb-2"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => extendTimer(10)}
+              className="bg-green-500 transition duration-300 ease-in-out hover:bg-green-600 focus:bg-green-700"
+            >
+              Extend 10s
+            </Button>
+          </div>
+        )}
+        <Button href="/resource" className="mt-4">Resources</Button>
       </div>
     </main>
   );
 }
-
