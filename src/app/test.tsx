@@ -21,13 +21,12 @@ export default function Home() {
   const [captcha, setCaptcha] = useState("");
   const [inputCaptcha, setInputCaptcha] = useState("");
   const [isVerified, setIsVerified] = useState(true);
-  const [timeInput, setTimeInput] = useState("00:01:00"); // Default to 10 seconds
+  const [timeInput, setTimeInput] = useState("00:01:00"); // Default to 1 minute
   const [timeErrorMessage, setTimeErrorMessage] = useState(""); // State for timer error message
   const [captchaErrorMessage, setCaptchaErrorMessage] = useState(""); // State for captcha error message
   const [phoneNumber, setPhoneNumber] = useState(""); // State for recipient phone number
   const [phoneErrorMessage, setPhoneErrorMessage] = useState(""); // State for phone number error message
   const [extendErrorMessage, setExtendErrorMessage] = useState(""); // State for extend error message
-
 
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
@@ -83,24 +82,24 @@ export default function Home() {
   const cancelTimer = () => {
     setIsActive(false);
     localStorage.setItem("isActive", "false");
-    setTimeLeft(0);
-    localStorage.setItem("timeLeft", "0");
-    // setTimeInput("00:01:00"); // Reset input box to default one minute
+    setTimeLeft(config.timer.defaultLength);
+    localStorage.setItem("timeLeft", config.timer.defaultLength.toString());
+    setTimeInput("00:01:00"); // Reset input box to default one minute
     setInputCaptcha("");
     setCaptcha("");
   };
 
   const extendTimer = (additionalTime: number) => {
-    if (timeLeft + additionalTime > 86399) { // 23:59:59 in seconds
-      setExtendErrorMessage("Time cannot exceed 23:59:59.");
-    } else {
-      setExtendErrorMessage("");
-      setTimeLeft((prev) => {
-        const newTime = prev + additionalTime;
-        localStorage.setItem("timeLeft", newTime.toString());
-        return newTime;
-      });
-    }
+    setExtendErrorMessage(""); // Clear previous error message
+    setTimeLeft((prev) => {
+      const newTime = prev + additionalTime;
+      if (newTime > 86399) {
+        setExtendErrorMessage("Time cannot exceed 23:59:59.");
+        return prev; // Return previous state if the new time exceeds the limit
+      }
+      localStorage.setItem("timeLeft", newTime.toString());
+      return newTime;
+    });
   };
 
   const generateCaptcha = () => {
