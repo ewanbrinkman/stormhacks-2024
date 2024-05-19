@@ -21,13 +21,13 @@ export default function Home() {
   const [captcha, setCaptcha] = useState("");
   const [inputCaptcha, setInputCaptcha] = useState("");
   const [isVerified, setIsVerified] = useState(true);
-  const [timeInput, setTimeInput] = useState("00:01:00"); // Default to 10 seconds
+  const [timeInput, setTimeInput] = useState("00:01:00"); // Default to 1 minute
   const [timeErrorMessage, setTimeErrorMessage] = useState(""); // State for timer error message
   const [captchaErrorMessage, setCaptchaErrorMessage] = useState(""); // State for captcha error message
   const [phoneNumber, setPhoneNumber] = useState(""); // State for recipient phone number
   const [phoneErrorMessage, setPhoneErrorMessage] = useState(""); // State for phone number error message
   const [extendErrorMessage, setExtendErrorMessage] = useState(""); // State for extend error message
-
+  const [captchaTimeLeft, setCaptchaTimeLeft] = useState(15); // 15-second timer for captcha
 
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
@@ -44,7 +44,7 @@ export default function Home() {
       localStorage.setItem("isActive", "false");
       generateCaptcha();
       setIsVerified(false);
-      sendSms(); // Send SMS when time runs out
+      startCaptchaTimer(); // Start the captcha timer when main timer reaches 0
     }
     return () => clearTimeout(timer);
   }, [isActive, timeLeft]);
@@ -52,6 +52,18 @@ export default function Home() {
   useEffect(() => {
     localStorage.setItem("isActive", isActive.toString());
   }, [isActive]);
+
+  useEffect(() => {
+    let captchaTimer: NodeJS.Timeout | undefined;
+    if (!isVerified && captchaTimeLeft > 0) {
+      captchaTimer = setTimeout(() => {
+        setCaptchaTimeLeft(captchaTimeLeft - 1);
+      }, 1000);
+    } else if (captchaTimeLeft === 0 && !isVerified) {
+      sendSms();
+    }
+    return () => clearTimeout(captchaTimer);
+  }, [captchaTimeLeft, isVerified]);
 
   const startTimer = () => {
     const totalSeconds = parseTimeInput(timeInput);
@@ -85,7 +97,6 @@ export default function Home() {
     localStorage.setItem("isActive", "false");
     setTimeLeft(0);
     localStorage.setItem("timeLeft", "0");
-    // setTimeInput("00:01:00"); // Reset input box to default one minute
     setInputCaptcha("");
     setCaptcha("");
   };
@@ -123,9 +134,14 @@ export default function Home() {
       localStorage.setItem("timeLeft", "60");
       setCaptchaErrorMessage(""); // Clear error message on successful verification
       setIsVerified(true);
+      setCaptchaTimeLeft(15); // Reset captcha timer
     } else {
       setCaptchaErrorMessage("Incorrect captcha. Please try again.");
     }
+  };
+
+  const startCaptchaTimer = () => {
+    setCaptchaTimeLeft(15); // Reset captcha timer to 15 seconds
   };
 
   const handleTimeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -189,7 +205,7 @@ export default function Home() {
   };
 
   const sendSms = () => {
-    axios.post('/api/send-sms', {
+    axios.post('/api/sendMessage/send-sms', {
       to: phoneNumber, // Use the recipient's phone number
       message: 'The user did not verify the captcha in time.',
     })
@@ -227,7 +243,7 @@ export default function Home() {
         ) : !isVerified ? (
           <div className="mb-4">
             <div className="text-white text-2xl mb-2">
-              Enter the captcha to reset the timer:
+              Enter the captcha to reset the timer ({captchaTimeLeft} seconds left):
             </div>
             <div className="text-yellow-500 text-4xl mb-2">{captcha}</div>
             <input
@@ -311,6 +327,12 @@ export default function Home() {
             )}
           </div>
         )}
+        <Button
+          href="/resource"
+          className="bg-blue-500 text-white transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mt-4"
+        >
+          Resources
+        </Button>
       </div>
     </main>
   );

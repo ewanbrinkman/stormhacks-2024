@@ -1,8 +1,68 @@
 "use client";
 
+import { useEffect, useRef } from 'react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css'; // Import Leaflet CSS
 import Button from '@components/Button';
 
 export default function Resource() {
+  const mapRef = useRef<HTMLDivElement | null>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
+
+  useEffect(() => {
+    if (!mapRef.current || mapInstanceRef.current) return;
+
+    const map = L.map(mapRef.current).setView([51.505, -0.09], 13);
+    mapInstanceRef.current = map;
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        map.setView([latitude, longitude], 13);
+
+        L.marker([latitude, longitude]).addTo(map)
+          .bindPopup('You are here')
+          .openPopup();
+
+        fetchHospitals(map, latitude, longitude);
+      });
+    }
+
+    const fetchHospitals = async (map: L.Map, lat: number, lon: number) => {
+      const query = `
+        [out:json];
+        (
+          node["amenity"="hospital"](around:10000,${lat},${lon});
+          way["amenity"="hospital"](around:10000,${lat},${lon});
+          relation["amenity"="hospital"](around:10000,${lat},${lon});
+        );
+        out body;
+        >;
+        out skel qt;
+      `;
+      const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const elements = data.elements;
+
+        elements.forEach((element: any) => {
+          if (element.lat && element.lon) {
+            L.marker([element.lat, element.lon]).addTo(map)
+              .bindPopup(element.tags.name || 'Hospital');
+          }
+        });
+      } catch (error) {
+        console.error('Error fetching hospital data:', error);
+      }
+    };
+  }, []);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-gray-100">
       <div className="flex flex-grow relative justify-center items-center">
@@ -30,6 +90,7 @@ export default function Resource() {
             <li>Place their bottom hand under their head for support.</li>
             <li>Place their top leg at a 90 degree angle to the body.</li>
           </ul>
+          <div ref={mapRef} style={{ width: '100%', height: '400px' }} />
           <Button href="/" className="mt-4 bg-black text-black border border-black">Return</Button>
         </div>
       </div>
