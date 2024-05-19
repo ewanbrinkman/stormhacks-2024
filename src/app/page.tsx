@@ -71,7 +71,8 @@ export default function Home() {
   };
 
   const handleCaptchaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputCaptcha(e.target.value);
+    const value = e.target.value.replace(/[^0-9]/g, ''); // Only allow numbers
+    setInputCaptcha(value);
     setCaptchaErrorMessage(''); // Clear captcha error message when user retypes
   };
 
@@ -145,6 +146,7 @@ export default function Home() {
                 value={inputCaptcha}
                 onChange={handleCaptchaChange}
                 className="text-black text-2xl p-2 rounded"
+                maxLength={4} // Limit to 4 digits
               />
               {captchaErrorMessage && <div className="text-red-500 text-sm mb-2">{captchaErrorMessage}</div>}
               <Button onClick={verifyCaptcha}>Verify</Button>
@@ -192,3 +194,4 @@ export default function Home() {
     </main>
   );
 }
+
