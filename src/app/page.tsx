@@ -32,17 +32,11 @@ export default function Home() {
   const startTimer = () => {
     const totalSeconds = parseTimeInput(timeInput);
     if (totalSeconds !== null) {
-      if (totalSeconds > 23 * 3600 + 59 * 60 + 59) {
-        setTimeErrorMessage('Time is limited up to 23:59:59.');
-      } else {
-        setIsActive(true);
-        setTimeLeft(totalSeconds);
-        setInitialTime(totalSeconds);
-        setIsVerified(true);
-        setTimeErrorMessage(''); // Clear error message when timer starts successfully
-      }
-    } else {
-      setTimeErrorMessage('Invalid time format. Please enter a valid time in HH:MM:SS format.');
+      setIsActive(true);
+      setTimeLeft(totalSeconds);
+      setInitialTime(totalSeconds);
+      setIsVerified(true);
+      setTimeErrorMessage(''); // Clear error message when timer starts successfully
     }
   };
 
@@ -98,8 +92,14 @@ export default function Home() {
       const hours = parseInt(match[1], 10);
       const minutes = parseInt(match[2], 10);
       const seconds = parseInt(match[3], 10);
-      return hours * 3600 + minutes * 60 + seconds;
+      const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+      if (totalSeconds > 23 * 3600 + 59 * 60 + 59) {
+        setTimeErrorMessage('Time is limited up to 23:59:59.');
+        return null;
+      }
+      return totalSeconds;
     }
+    setTimeErrorMessage('Invalid time format. Please enter a valid time in HH:MM:SS format.');
     return null;
   };
 
@@ -118,6 +118,10 @@ export default function Home() {
   };
 
   const backgroundColor = timeLeft === 0 && !isVerified ? 'bg-bad' : 'bg-good';
+
+  const isTimeInputValid = () => {
+    return timeInput.match(/^([0-1]?[0-9]|2[0-3]):([0-5]?[0-9]):([0-5]?[0-9])$/);
+  };
 
   return (
     <main className={`flex min-h-screen flex-col items-center justify-center ${backgroundColor}`}>
@@ -149,7 +153,7 @@ export default function Home() {
             />
             {captchaErrorMessage && <div className="text-red-500 text-sm mb-2">{captchaErrorMessage}</div>}
             <Button className='bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mb-2'
-            onClick={verifyCaptcha}>Verify</Button>
+              onClick={verifyCaptcha}>Verify</Button>
           </div>
         ) : null}
         {!isActive && isVerified && (
@@ -164,12 +168,14 @@ export default function Home() {
               maxLength={8} // To ensure it doesn't exceed HH:MM:SS
             />
             {timeErrorMessage && <div className="text-red-500 text-sm mb-2">{timeErrorMessage}</div>}
-            <Button
-              className='bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mb-2'
-              onClick={startTimer}
-            >
-              Start
-            </Button>
+            {isTimeInputValid() && !timeErrorMessage && (
+              <Button
+                className='bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mb-2'
+                onClick={startTimer}
+              >
+                Start
+              </Button>
+            )}
           </>
         )}
         {isActive && (
@@ -188,7 +194,7 @@ export default function Home() {
             </Button>
           </div>
         )}
-        <Button href="/resource" className='bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mt-4'>Resources</Button>
+        <Button href="/resource" className='bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mb-2'>Resources</Button>
       </div>
     </main>
   );
