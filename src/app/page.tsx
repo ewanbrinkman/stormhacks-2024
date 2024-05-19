@@ -328,7 +328,7 @@ export default function Home() {
           </div>
         )}
         <Button
-          href="/resource"
+          href="/resources"
           className="bg-blue-500 text-white transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mt-4"
         >
           Resources
