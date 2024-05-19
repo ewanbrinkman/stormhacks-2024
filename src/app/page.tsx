@@ -11,7 +11,7 @@ export default function Home() {
   const [captcha, setCaptcha] = useState("");
   const [inputCaptcha, setInputCaptcha] = useState("");
   const [isVerified, setIsVerified] = useState(true);
-  const [timeInput, setTimeInput] = useState("00:00:10"); // Default to 10 seconds
+  const [timeInput, setTimeInput] = useState("00:01:00"); // Default to 10 seconds
   const [timeErrorMessage, setTimeErrorMessage] = useState(""); // State for timer error message
   const [captchaErrorMessage, setCaptchaErrorMessage] = useState(""); // State for captcha error message
 
