@@ -75,8 +75,9 @@ export default function Home() {
 
   const verifyCaptcha = () => {
     if (inputCaptcha === captcha) {
-      resetTimer();
+      setTimeLeft(60); // Reset timer to one minute (60 seconds)
       setCaptchaErrorMessage(""); // Clear error message on successful verification
+      setIsVerified(true);
     } else {
       setCaptchaErrorMessage("Incorrect captcha. Please try again.");
     }
@@ -86,6 +87,10 @@ export default function Home() {
     const value = e.target.value.replace(/[^0-9:]/g, ""); // Only allow numbers and colons
     setTimeInput(value);
     setTimeErrorMessage(""); // Clear error message when user retypes
+    const totalSeconds = parseTimeInput(value);
+    if (totalSeconds !== null) {
+      setTimeLeft(totalSeconds); // Reflect valid time input on timer
+    }
   };
 
   const parseTimeInput = (input: string) => {
@@ -164,7 +169,7 @@ export default function Home() {
               </div>
             )}
             <Button
-              className="bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mb-2"
+              className="bg-blue-500 text-white transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mb-2"
               onClick={verifyCaptcha}
             >
               Verify
@@ -189,7 +194,7 @@ export default function Home() {
             )}
             {isTimeInputValid() && !timeErrorMessage && (
               <Button
-                className="bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mb-2"
+                className="bg-blue-500 text-white transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mb-2"
                 onClick={startTimer}
               >
                 Start
@@ -213,6 +218,12 @@ export default function Home() {
             </Button>
           </div>
         )}
+        <Button
+          href="/resource"
+          className="bg-blue-500 text-white transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mt-4"
+        >
+          Resources
+        </Button>
       </div>
     </main>
   );
