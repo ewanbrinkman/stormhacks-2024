@@ -6,9 +6,18 @@ import config from "@assets/config.json";
 import axios from "axios";
 
 export default function Home() {
-  const [timeLeft, setTimeLeft] = useState(config.timer.defaultLength);
-  const [initialTime, setInitialTime] = useState(config.timer.defaultLength);
-  const [isActive, setIsActive] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const savedTime = localStorage.getItem("timeLeft");
+    return savedTime !== null ? parseInt(savedTime, 10) : config.timer.defaultLength;
+  });
+  const [initialTime, setInitialTime] = useState(() => {
+    const savedInitialTime = localStorage.getItem("initialTime");
+    return savedInitialTime !== null ? parseInt(savedInitialTime, 10) : config.timer.defaultLength;
+  });
+  const [isActive, setIsActive] = useState(() => {
+    const savedIsActive = localStorage.getItem("isActive");
+    return savedIsActive === "true" ? true : false;
+  });
   const [captcha, setCaptcha] = useState("");
   const [inputCaptcha, setInputCaptcha] = useState("");
   const [isVerified, setIsVerified] = useState(true);
@@ -22,10 +31,15 @@ export default function Home() {
     let timer: NodeJS.Timeout | undefined;
     if (isActive && timeLeft > 0) {
       timer = setTimeout(() => {
-        setTimeLeft(timeLeft - 1);
+        setTimeLeft((prev) => {
+          const newTime = prev - 1;
+          localStorage.setItem("timeLeft", newTime.toString());
+          return newTime;
+        });
       }, 1000);
     } else if (timeLeft === 0) {
       setIsActive(false);
+      localStorage.setItem("isActive", "false");
       generateCaptcha();
       setIsVerified(false);
       sendSms(); // Send SMS when time runs out
@@ -33,12 +47,18 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, [isActive, timeLeft]);
 
+  useEffect(() => {
+    localStorage.setItem("isActive", isActive.toString());
+  }, [isActive]);
+
   const startTimer = () => {
     const totalSeconds = parseTimeInput(timeInput);
     if (totalSeconds !== null && validatePhoneNumber(phoneNumber)) {
       setIsActive(true);
       setTimeLeft(totalSeconds);
       setInitialTime(totalSeconds);
+      localStorage.setItem("timeLeft", totalSeconds.toString());
+      localStorage.setItem("initialTime", totalSeconds.toString());
       setIsVerified(true);
       setTimeErrorMessage(""); // Clear error message when timer starts successfully
       setPhoneErrorMessage(""); // Clear phone error message
@@ -49,21 +69,29 @@ export default function Home() {
 
   const resetTimer = () => {
     setTimeLeft(initialTime);
+    localStorage.setItem("timeLeft", initialTime.toString());
     setInputCaptcha("");
     setCaptcha("");
     setIsVerified(true);
     setIsActive(false);
+    localStorage.setItem("isActive", "false");
   };
 
   const cancelTimer = () => {
     setIsActive(false);
+    localStorage.setItem("isActive", "false");
     setTimeLeft(0);
+    localStorage.setItem("timeLeft", "0");
     setInputCaptcha("");
     setCaptcha("");
   };
 
   const extendTimer = (additionalTime: number) => {
-    setTimeLeft(timeLeft + additionalTime);
+    setTimeLeft((prev) => {
+      const newTime = prev + additionalTime;
+      localStorage.setItem("timeLeft", newTime.toString());
+      return newTime;
+    });
   };
 
   const generateCaptcha = () => {
@@ -83,6 +111,7 @@ export default function Home() {
   const verifyCaptcha = () => {
     if (inputCaptcha === captcha) {
       setTimeLeft(60); // Reset timer to one minute (60 seconds)
+      localStorage.setItem("timeLeft", "60");
       setCaptchaErrorMessage(""); // Clear error message on successful verification
       setIsVerified(true);
     } else {
@@ -97,6 +126,7 @@ export default function Home() {
     const totalSeconds = parseTimeInput(value);
     if (totalSeconds !== null) {
       setTimeLeft(totalSeconds); // Reflect valid time input on timer
+      localStorage.setItem("timeLeft", totalSeconds.toString());
     }
   };
 
@@ -118,8 +148,12 @@ export default function Home() {
       const hours = parseInt(match[1], 10);
       const minutes = parseInt(match[2], 10);
       const seconds = parseInt(match[3], 10);
-      const totalSeconds = hours * 3600 + minutes * 60 + seconds;
-      if (totalSeconds > 23 * 3600 + 59 * 60 + 59) {
+      const totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+      if (totalSeconds === 0) {
+        setTimeErrorMessage("00:00:00 is not a valid time.");
+        return null;
+      }
+      if (totalSeconds > 86399) {
         setTimeErrorMessage("Time is limited up to 23:59:59.");
         return null;
       }
