@@ -1,19 +1,19 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import Button from '@components/Button';
-import config from '@assets/config.json';
+import React, { useState, useEffect } from "react";
+import Button from "@components/Button";
+import config from "@assets/config.json";
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState(config.timer.defaultLength);
   const [initialTime, setInitialTime] = useState(config.timer.defaultLength);
   const [isActive, setIsActive] = useState(false);
-  const [captcha, setCaptcha] = useState('');
-  const [inputCaptcha, setInputCaptcha] = useState('');
+  const [captcha, setCaptcha] = useState("");
+  const [inputCaptcha, setInputCaptcha] = useState("");
   const [isVerified, setIsVerified] = useState(true);
-  const [timeInput, setTimeInput] = useState('00:00:10'); // Default to 10 seconds
-  const [timeErrorMessage, setTimeErrorMessage] = useState(''); // State for timer error message
-  const [captchaErrorMessage, setCaptchaErrorMessage] = useState(''); // State for captcha error message
+  const [timeInput, setTimeInput] = useState("00:00:10"); // Default to 10 seconds
+  const [timeErrorMessage, setTimeErrorMessage] = useState(""); // State for timer error message
+  const [captchaErrorMessage, setCaptchaErrorMessage] = useState(""); // State for captcha error message
 
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
@@ -36,14 +36,14 @@ export default function Home() {
       setTimeLeft(totalSeconds);
       setInitialTime(totalSeconds);
       setIsVerified(true);
-      setTimeErrorMessage(''); // Clear error message when timer starts successfully
+      setTimeErrorMessage(""); // Clear error message when timer starts successfully
     }
   };
 
   const resetTimer = () => {
     setTimeLeft(initialTime);
-    setInputCaptcha('');
-    setCaptcha('');
+    setInputCaptcha("");
+    setCaptcha("");
     setIsVerified(true);
     setIsActive(false);
   };
@@ -51,8 +51,8 @@ export default function Home() {
   const cancelTimer = () => {
     setIsActive(false);
     setTimeLeft(0);
-    setInputCaptcha('');
-    setCaptcha('');
+    setInputCaptcha("");
+    setCaptcha("");
   };
 
   const extendTimer = (additionalTime: number) => {
@@ -60,29 +60,32 @@ export default function Home() {
   };
 
   const generateCaptcha = () => {
-    const randomCaptcha = Math.floor(config.randomNumber.min + Math.random() * (config.randomNumber.max - config.randomNumber.min)).toString();
+    const randomCaptcha = Math.floor(
+      config.randomNumber.min +
+        Math.random() * (config.randomNumber.max - config.randomNumber.min)
+    ).toString();
     setCaptcha(randomCaptcha);
   };
 
   const handleCaptchaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^0-9]/g, ''); // Only allow numbers
+    const value = e.target.value.replace(/[^0-9]/g, ""); // Only allow numbers
     setInputCaptcha(value);
-    setCaptchaErrorMessage(''); // Clear captcha error message when user retypes
+    setCaptchaErrorMessage(""); // Clear captcha error message when user retypes
   };
 
   const verifyCaptcha = () => {
     if (inputCaptcha === captcha) {
       resetTimer();
-      setCaptchaErrorMessage(''); // Clear error message on successful verification
+      setCaptchaErrorMessage(""); // Clear error message on successful verification
     } else {
-      setCaptchaErrorMessage('Incorrect captcha. Please try again.');
+      setCaptchaErrorMessage("Incorrect captcha. Please try again.");
     }
   };
 
   const handleTimeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^0-9:]/g, ''); // Only allow numbers and colons
+    const value = e.target.value.replace(/[^0-9:]/g, ""); // Only allow numbers and colons
     setTimeInput(value);
-    setTimeErrorMessage(''); // Clear error message when user retypes
+    setTimeErrorMessage(""); // Clear error message when user retypes
   };
 
   const parseTimeInput = (input: string) => {
@@ -94,12 +97,14 @@ export default function Home() {
       const seconds = parseInt(match[3], 10);
       const totalSeconds = hours * 3600 + minutes * 60 + seconds;
       if (totalSeconds > 23 * 3600 + 59 * 60 + 59) {
-        setTimeErrorMessage('Time is limited up to 23:59:59.');
+        setTimeErrorMessage("Time is limited up to 23:59:59.");
         return null;
       }
       return totalSeconds;
     }
-    setTimeErrorMessage('Invalid time format. Please enter a valid time in HH:MM:SS format.');
+    setTimeErrorMessage(
+      "Invalid time format. Please enter a valid time in HH:MM:SS format."
+    );
     return null;
   };
 
@@ -109,22 +114,26 @@ export default function Home() {
     const seconds = totalSeconds % 60;
 
     const formattedTime = [
-      String(hours).padStart(2, '0'),
-      String(minutes).padStart(2, '0'),
-      String(seconds).padStart(2, '0')
-    ].join(':');
+      String(hours).padStart(2, "0"),
+      String(minutes).padStart(2, "0"),
+      String(seconds).padStart(2, "0"),
+    ].join(":");
 
     return formattedTime;
   };
 
-  const backgroundColor = timeLeft === 0 && !isVerified ? 'bg-bad' : 'bg-good';
+  const backgroundColor = timeLeft === 0 && !isVerified ? "bg-bad" : "bg-good";
 
   const isTimeInputValid = () => {
-    return timeInput.match(/^([0-1]?[0-9]|2[0-3]):([0-5]?[0-9]):([0-5]?[0-9])$/);
+    return timeInput.match(
+      /^([0-1]?[0-9]|2[0-3]):([0-5]?[0-9]):([0-5]?[0-9])$/
+    );
   };
 
   return (
-    <main className={`flex min-h-screen flex-col items-center justify-center ${backgroundColor}`}>
+    <main
+      className={`flex min-h-screen flex-col items-center justify-center ${backgroundColor}`}
+    >
       <div className="flex flex-col items-center justify-center text-center">
         <div className="flex items-center justify-center mb-4">
           <img src="/favicon.png" alt="icon" className="h-8 mr-2" />
@@ -141,9 +150,7 @@ export default function Home() {
             <div className="text-white text-2xl mb-2">
               Enter the captcha to reset the timer:
             </div>
-            <div className="text-yellow-500 text-4xl mb-2">
-              {captcha}
-            </div>
+            <div className="text-yellow-500 text-4xl mb-2">{captcha}</div>
             <input
               type="text"
               value={inputCaptcha}
@@ -151,9 +158,17 @@ export default function Home() {
               className="text-black text-2xl p-2 rounded mb-2"
               maxLength={4} // Limit to 4 digits
             />
-            {captchaErrorMessage && <div className="text-red-500 text-sm mb-2">{captchaErrorMessage}</div>}
-            <Button className='bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mb-2'
-              onClick={verifyCaptcha}>Verify</Button>
+            {captchaErrorMessage && (
+              <div className="text-red-500 text-sm mb-2">
+                {captchaErrorMessage}
+              </div>
+            )}
+            <Button
+              className="bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mb-2"
+              onClick={verifyCaptcha}
+            >
+              Verify
+            </Button>
           </div>
         ) : null}
         {!isActive && isVerified && (
@@ -167,10 +182,14 @@ export default function Home() {
               placeholder="HH:MM:SS"
               maxLength={8} // To ensure it doesn't exceed HH:MM:SS
             />
-            {timeErrorMessage && <div className="text-red-500 text-sm mb-2">{timeErrorMessage}</div>}
+            {timeErrorMessage && (
+              <div className="text-red-500 text-sm mb-2">
+                {timeErrorMessage}
+              </div>
+            )}
             {isTimeInputValid() && !timeErrorMessage && (
               <Button
-                className='bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mb-2'
+                className="bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mb-2"
                 onClick={startTimer}
               >
                 Start
@@ -194,7 +213,6 @@ export default function Home() {
             </Button>
           </div>
         )}
-        <Button href="/resource" className='bg-blue-500 transition duration-300 ease-in-out hover:bg-blue-600 focus:bg-blue-700 mb-2'>Resources</Button>
       </div>
     </main>
   );
